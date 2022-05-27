@@ -132,13 +132,11 @@ def run():
                 
                 target = (nbits[2:]+'00'*(int(nbits[:2],16) - 3)).zfill(64)
                 # print('nbits:{} target:{}\n'.format(nbits,target))
-                print(job_id)
-                sys.stdout.flush()
 
         except Exception as e:
             print(str(e))
             pass
-        
+        print(job_id)
     
 
 if __name__ == "__main__":
