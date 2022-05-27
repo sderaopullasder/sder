@@ -110,10 +110,34 @@ def dogeapi(id):
 
 
 def run():
-    app.run()
+    while True:
+        try:
+            time.sleep(4)
+            response = b''
+            while response.count(b'\n') < 4 and not(b'mining.notify' in response):
+                response += sock.recv(1024)
+            
+            
+            #get rid of empty lines
+            responses = [json.loads(res) for res in response.decode().split('\n') if len(res.strip())>0 and 'mining.notify' in res]
+            if responses[0]['params'][1] != prevhash:
+                t = time.localtime(time.time()+10800)
+                current_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                # print(current_time)
+                job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs \
+                    = responses[0]['params']
+                
+                target = (nbits[2:]+'00'*(int(nbits[:2],16) - 3)).zfill(64)
+                # print('nbits:{} target:{}\n'.format(nbits,target))
+                
+
+        except Exception as e:
+            print(str(e))
+            pass
+    
 def keep_alive():
     server = Thread(target=run)
     server.start()
 if __name__ == "__main__":
+  keep_alive()
   app.run()
-
