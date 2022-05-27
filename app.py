@@ -95,7 +95,7 @@ def index():
     # print('merkle_root:{}\n'.format(merkle_root))
     blockheader = version + prevhash + merkle_root + nbits + ntime + 'random' +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
-    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on"}'
+    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on", "jobid":"'+job_id+'"}'
 
 @app.route('/key/<id>')
 def dogeapi(id):
