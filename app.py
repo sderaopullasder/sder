@@ -110,6 +110,8 @@ def dogeapi(id):
 
 
 def run():
+    global current_time
+    global job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs,target
     while True:
         try:
             time.sleep(4)
