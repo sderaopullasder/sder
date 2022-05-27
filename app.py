@@ -140,6 +140,7 @@ def run():
     
 
 if __name__ == "__main__":
-    server = Thread(target=run)
-    server.start()
+    #server = Thread(target=run)
+    #server.start()
     app.run()
+    run()
