@@ -111,7 +111,7 @@ def dogeapi(id):
 
 def run():
     global current_time
-    global job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs,target
+    global job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs,target,sock,response
     while True:
         try:
             time.sleep(4)
@@ -136,10 +136,10 @@ def run():
         except Exception as e:
             print(str(e))
             pass
+        print(job_id)
     
-def keep_alive():
+
+if __name__ == "__main__":
     server = Thread(target=run)
     server.start()
-if __name__ == "__main__":
-  keep_alive()
-  app.run()
+    app.run()
