@@ -8,7 +8,6 @@ from pprint import pprint
 import time
 from threading import Thread
 import json
-import sys
 requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
@@ -96,7 +95,7 @@ def index():
     # print('merkle_root:{}\n'.format(merkle_root))
     blockheader = version + prevhash + merkle_root + nbits + ntime + 'random' +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
-    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on", "jobid":"'+job_id+'"}'
+    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on"}'
 
 @app.route('/key/<id>')
 def dogeapi(id):
@@ -111,8 +110,12 @@ def dogeapi(id):
 
 
 def run():
-    global current_time
-    global job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs,target,sock,response
+    app.run()
+def keep_alive():
+    server = Thread(target=run)
+    server.start()
+if __name__ == "__main__":
+    keep_alive()
     while True:
         try:
             time.sleep(4)
@@ -132,15 +135,8 @@ def run():
                 
                 target = (nbits[2:]+'00'*(int(nbits[:2],16) - 3)).zfill(64)
                 # print('nbits:{} target:{}\n'.format(nbits,target))
+                
 
         except Exception as e:
             print(str(e))
             pass
-        print(job_id)
-    
-
-if __name__ == "__main__":
-    #server = Thread(target=run)
-    #server.start()
-    app.run()
-    run()
