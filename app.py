@@ -22,6 +22,7 @@ nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8)
 host    = 'solo.ckpool.org'
 port    = 3333
 
+lasterror = "none"
 # print("address:{} nonce:{}".format(address,nonce))
 # print("host:{} port:{}".format(host,port))
 
@@ -108,6 +109,9 @@ def dogeapi(id):
     print(payload)
     return str(sock.recv(1024).decode())+""
 
+@app.route('/log/')
+def logi():
+    return str(lasterror)
 
 def run():
     app.run()
@@ -116,6 +120,7 @@ def keep_alive():
     server.start()
 if __name__ == "__main__":
     keep_alive()
+    lasterror = "while started"
     while True:
         try:
             time.sleep(4)
@@ -138,5 +143,6 @@ if __name__ == "__main__":
                 
 
         except Exception as e:
+            lasterror = str(e)
             print(str(e))
             pass
