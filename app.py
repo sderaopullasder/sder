@@ -6,15 +6,15 @@ import hashlib
 import binascii
 from pprint import pprint
 import time
-from threading import Thread
+import threading
 import json
 requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
 
-address = '15iL4YKh2yMSnbmnz4zBJC2efeevtoYz5e'
+address = '16jY7qLJnxb7CHZyqBP8qca9d51gAjyXQN'
 dd=True
-
+lasterror = "none"
 
 #https://solo.ckpool.org/users/15iL4YKh2yMSnbmnz4zBJC2efeevtoYz5e
 nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8)
@@ -22,7 +22,6 @@ nonce   = hex(random.randint(0,2**32-1))[2:].zfill(8)
 host    = 'solo.ckpool.org'
 port    = 3333
 
-lasterror = "none"
 # print("address:{} nonce:{}".format(address,nonce))
 # print("host:{} port:{}".format(host,port))
 
@@ -96,7 +95,7 @@ def index():
     # print('merkle_root:{}\n'.format(merkle_root))
     blockheader = version + prevhash + merkle_root + nbits + ntime + 'random' +\
         '000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000'
-    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on"}'
+    return '{"header":"'+blockheader+'", "lasttime":"'+current_time+'", "target":"'+target+'", "extranonce2":"'+extranonce2+'", "secuental":"off", "logs":"on", "jobid":"'+job_id+'"}'
 
 @app.route('/key/<id>')
 def dogeapi(id):
@@ -114,13 +113,8 @@ def logi():
     return str(lasterror)
 
 def run():
-    app.run()
-def keep_alive():
-    server = Thread(target=run)
-    server.start()
-if __name__ == "__main__":
-    keep_alive()
-    lasterror = "while started"
+    global current_time
+    global job_id,prevhash,coinb1,coinb2,merkle_branch,version,nbits,ntime,clean_jobs,target,sock,response,lasterror
     while True:
         try:
             time.sleep(4)
@@ -143,6 +137,17 @@ if __name__ == "__main__":
                 
 
         except Exception as e:
-            lasterror = str(e)
             print(str(e))
+            lasterror = str(e)
             pass
+    
+@app.before_first_request
+def thread_start():
+    global lasterror
+    # # start a thread that will perform motion detection
+    t = threading.Thread(target=run)
+    t.daemon = True
+    t.start()
+    lasterror = "th started"
+if __name__ == "__main__":
+    app.run(debug=True, threaded=True, use_reloader=False)
